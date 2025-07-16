@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReviewScan - Debug Mode</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .debug-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+
+        .main-content {
+            padding: 40px;
+        }
+
+        .input-section {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+
+        .test-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .test-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .analyze-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .debug-info {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .error {
+            background: #fadbd8;
+            border: 2px solid #e74c3c;
+            color: #c0392b;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .success {
+            background: #d4edda;
+            border: 2px solid #27ae60;
+            color: #155724;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            color: #667eea;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="debug-badge">🐛 DEBUG MODE</div>
+            <h1>📄 ReviewScan</h1>
+            <p>Debug Version - Detailed Error Tracking</p>
+        </div>
+
+        <div class="main-content">
+            <div class="input-section">
+                <h3>🧪 Quick Tests</h3>
+                <div class="test-buttons">
+                    <button class="test-btn" onclick="testFunction()">Test Function</button>
+                    <button class="test-btn" onclick="testCORS()">Test CORS</button>
+                    <button class="test-btn" onclick="testVideoId()">Test Video ID</button>
+                    <button class="test-btn" onclick="clearDebug()">Clear Debug</button>
+                </div>
+
+                <div class="form-group">
+                    <label for="openai-key">🤖 OpenAI API Key (Optional):</label>
+                    <input type="password" id="openai-key" placeholder="sk-...">
+                </div>
+
+                <div class="form-group">
+                    <label for="youtube-key">📺 YouTube API Key (Optional):</label>
+                    <input type="password" id="youtube-key" placeholder="AIza...">
+                </div>
+                
+                <div class="form-group">
+                    <label for="youtube-url">🔗 YouTube Video URL:</label>
+                    <input type="url" id="youtube-url" placeholder="https://www.youtube.com/watch?v=..." value="https://www.youtube.com/watch?v=dQw4w9WgXcQ">
+                </div>
+                
+                <button class="analyze-btn" onclick="analyzeVideo()">✨ Analyze Video (Debug)</button>
+            </div>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Processing...</p>
+            </div>
+
+            <div id="results"></div>
+            <div class="debug-info" id="debug-log">
+                <strong>🐛 Debug Log:</strong><br>
+                Ready to debug... Click any button to start.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function log(message, type = 'info') {
+            const debugLog = document.getElementById('debug-log');
+            const timestamp = new Date().toLocaleTimeString();
+            const color = type === 'error' ? 'red' : type === 'success' ? 'green' : type === 'warning' ? 'orange' : 'black';
+            
+            debugLog.innerHTML += `<div style="color: ${color};">[${timestamp}] ${message}</div>`;
+            debugLog.scrollTop = debugLog.scrollHeight;
+            console.log(`[${timestamp}] ${message}`);
+        }
+
+        function clearDebug() {
+            document.getElementById('debug-log').innerHTML = '<strong>🐛 Debug Log:</strong><br>Debug cleared.';
+            document.getElementById('results').innerHTML = '';
+        }
+
+        async function testFunction() {
+            log('🧪 Testing if function exists...', 'info');
+            
+            try {
+                const response = await fetch('/.netlify/functions/analyze', {
+                    method: 'OPTIONS'
+                });
+                
+                log(`Function response: ${response.status} ${response.statusText}`, 'success');
+                log(`Function headers: ${JSON.stringify([...response.headers])}`, 'info');
+                
+                if (response.ok) {
+                    log('✅ Function is deployed and responding', 'success');
+                } else {
+                    log('❌ Function exists but returned error', 'error');
+                }
+            } catch (error) {
+                log(`❌ Function test failed: ${error.message}`, 'error');
+            }
+        }
+
+        async function testCORS() {
+            log('🌐 Testing CORS configuration...', 'info');
+            
+            try {
+                const response = await fetch('/.netlify/functions/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        test: 'cors'
+                    })
+                });
+                
+                log(`CORS test response: ${response.status}`, 'info');
+                const responseText = await response.text();
+                log(`CORS response body: ${responseText}`, 'info');
+                
+            } catch (error) {
+                log(`❌ CORS test failed: ${error.message}`, 'error');
+            }
+        }
+
+        function testVideoId() {
+            const url = document.getElementById('youtube-url').value.trim();
+            log(`🎬 Testing video ID extraction from: ${url}`, 'info');
+            
+            const videoId = extractVideoId(url);
+            if (videoId) {
+                log(`✅ Video ID extracted: ${videoId}`, 'success');
+                log(`Video ID length: ${videoId.length}`, 'info');
+                log(`Video ID pattern: ${/^[a-zA-Z0-9_-]{11}$/.test(videoId) ? 'Valid' : 'Invalid'}`, videoId.length === 11 ? 'success' : 'error');
+            } else {
+                log(`❌ Could not extract video ID`, 'error');
+            }
+        }
+
+        function extractVideoId(url) {
+            const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+            const match = url.match(regExp);
+            return (match && match[7].length === 11) ? match[7] : null;
+        }
+
+        async function analyzeVideo() {
+            const openaiKey = document.getElementById('openai-key').value.trim();
+            const youtubeKey = document.getElementById('youtube-key').value.trim();
+            const youtubeUrl = document.getElementById('youtube-url').value.trim();
+            
+            clearDebug();
+            log('🚀 Starting video analysis...', 'info');
+            
+            // Validate inputs
+            log(`📝 Input validation:`, 'info');
+            log(`- YouTube URL: ${youtubeUrl ? 'Provided' : 'Missing'}`, youtubeUrl ? 'success' : 'error');
+            log(`- OpenAI Key: ${openaiKey ? 'Provided' : 'Not provided'}`, openaiKey ? 'success' : 'warning');
+            log(`- YouTube Key: ${youtubeKey ? 'Provided' : 'Not provided'}`, youtubeKey ? 'success' : 'warning');
+            
+            if (!youtubeUrl) {
+                showError('Please enter a YouTube URL');
+                return;
+            }
+
+            if (!openaiKey && !youtubeKey) {
+                showError('Please enter at least one API key');
+                return;
+            }
+
+            const videoId = extractVideoId(youtubeUrl);
+            log(`🎬 Video ID extraction: ${videoId || 'Failed'}`, videoId ? 'success' : 'error');
+            
+            if (!videoId) {
+                showError('Invalid YouTube URL format');
+                return;
+            }
+
+            // Validate API key formats
+            if (openaiKey) {
+                const openaiValid = openaiKey.startsWith('sk-');
+                log(`🤖 OpenAI key format: ${openaiValid ? 'Valid' : 'Invalid'}`, openaiValid ? 'success' : 'error');
+                if (!openaiValid) {
+                    showError('Invalid OpenAI API key format. Key should start with "sk-"');
+                    return;
+                }
+            }
+
+            if (youtubeKey) {
+                const youtubeValid = youtubeKey.startsWith('AIza');
+                log(`📺 YouTube key format: ${youtubeValid ? 'Valid' : 'Invalid'}`, youtubeValid ? 'success' : 'error');
+                if (!youtubeValid) {
+                    showError('Invalid YouTube API key format. Key should start with "AIza"');
+                    return;
+                }
+            }
+
+            showLoading(true);
+
+            // Prepare request
+            const requestData = {
+                videoId: videoId,
+                openaiKey: openaiKey || null,
+                youtubeKey: youtubeKey || null
+            };
+
+            log(`📤 Request data prepared:`, 'info');
+            log(`${JSON.stringify(requestData, null, 2)}`, 'info');
+
+            try {
+                log('🌐 Sending request to function...', 'info');
+                
+                const response = await fetch('/.netlify/functions/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestData)
+                });
+
+                log(`📥 Response received: ${response.status} ${response.statusText}`, response.ok ? 'success' : 'error');
+                log(`Response headers: ${JSON.stringify([...response.headers])}`, 'info');
+
+                const responseText = await response.text();
+                log(`Response body length: ${responseText.length} characters`, 'info');
+                log(`Response preview: ${responseText.substring(0, 200)}${responseText.length > 200 ? '...' : ''}`, 'info');
+
+                if (!response.ok) {
+                    log(`❌ HTTP Error: ${response.status}`, 'error');
+                    try {
+                        const errorData = JSON.parse(responseText);
+                        log(`Error details: ${JSON.stringify(errorData, null, 2)}`, 'error');
+                        throw new Error(errorData.error || `Server error: ${response.status}`);
+                    } catch (parseError) {
+                        log(`❌ Could not parse error response: ${parseError.message}`, 'error');
+                        throw new Error(`Server error: ${response.status} - ${responseText}`);
+                    }
+                }
+
+                let data;
+                try {
+                    data = JSON.parse(responseText);
+                    log('✅ Response parsed successfully', 'success');
+                } catch (parseError) {
+                    log(`❌ JSON parse error: ${parseError.message}`, 'error');
+                    throw new Error('Invalid JSON response from server');
+                }
+
+                log(`📊 Analysis completed successfully!`, 'success');
+                log(`Analysis type: ${data.metadata?.analysisType || 'Unknown'}`, 'success');
+                
+                showSuccess(`Analysis completed! Video: ${data.video?.title || 'Unknown'}`);
+                
+                // Display basic results
+                const resultsDiv = document.getElementById('results');
+                resultsDiv.innerHTML = `
+                    <div class="success">
+                        <h3>✅ Analysis Successful!</h3>
+                        <p><strong>Video:</strong> ${data.video?.title || 'Unknown'}</p>
+                        <p><strong>Channel:</strong> ${data.video?.channel || 'Unknown'}</p>
+                        <p><strong>Analysis Type:</strong> ${data.metadata?.analysisType || 'Unknown'}</p>
+                        <p><strong>Transcript Length:</strong> ${data.metadata?.transcriptLength || 0} characters</p>
+                        <p><strong>Summary:</strong> ${data.analysis?.video_summary || 'No summary available'}</p>
+                    </div>
+                `;
+
+            } catch (error) {
+                log(`❌ Request failed: ${error.message}`, 'error');
+                showError(error.message);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+        }
+
+        function showError(message) {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = `
+                <div class="error">
+                    <h3>❌ Error</h3>
+                    <p>${message}</p>
+                </div>
+            `;
+            log(`❌ Error: ${message}`, 'error');
+        }
+
+        function showSuccess(message) {
+            log(`✅ Success: ${message}`, 'success');
+        }
+
+        // Auto-run basic tests on page load
+        window.addEventListener('load', () => {
+            log('🚀 Debug page loaded', 'info');
+            setTimeout(() => {
+                log('🧪 Running automatic tests...', 'info');
+                testFunction();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

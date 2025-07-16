@@ -1,0 +1,38 @@
+{
+  "name": "reviewscan-production",
+  "version": "2.0.0",
+  "description": "AI-powered YouTube video review analyzer with dual API key support",
+  "main": "index.html",
+  "scripts": {
+    "build": "echo 'Build complete'",
+    "dev": "netlify dev",
+    "test": "echo 'No tests specified'"
+  },
+  "dependencies": {
+    "youtube-transcript": "^1.0.6",
+    "openai": "^4.20.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "youtube", 
+    "ai", 
+    "analysis", 
+    "reviews", 
+    "openai", 
+    "video-analysis",
+    "sentiment-analysis",
+    "bias-detection"
+  ],
+  "author": "ReviewScan",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/reviewscan.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/reviewscan/issues"
+  },
+  "homepage": "https://github.com/your-username/reviewscan#readme"
+}
